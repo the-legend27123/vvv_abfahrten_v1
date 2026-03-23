@@ -1,57 +1,138 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Abfahrten Feldkirch Landesgericht</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abfahrtsmonitor – Feldkirch Landesgericht</title>
 
-<script src="https://fahrplan.vmobil.at/webapp/staticfiles/hafas-widget-core.1.0.0.js?L=vs_vvv&"></script>
+  <script
+    type="text/javascript"
+    src="https://fahrplan.vmobil.at/webapp/staticfiles/hafas-widget-core.1.0.0.js?L=vs_vvv&">
+  </script>
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0b1220;
-    color: white;
-}
+  <style>
+    :root {
+      --bg: #101214;
+      --panel: #181c20;
+      --text: #f5f7fa;
+      --muted: #aab3bd;
+      --border: rgba(255,255,255,0.08);
+    }
 
-.header {
-    padding: 30px;
-    font-size: 2.5rem;
-    font-weight: bold;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-.sub {
-    padding: 0 30px 20px 30px;
-    color: #9ca3af;
-}
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Arial, sans-serif;
+    }
 
-.container {
-    padding: 20px 30px 40px 30px;
-}
+    body {
+      display: flex;
+      flex-direction: column;
+    }
 
-.widget-wrapper {
-    background: rgba(255,255,255,0.05);
-    border-radius: 16px;
-    padding: 20px;
-}
-</style>
+    .topbar {
+      padding: 18px 24px 10px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 6px 0;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .stage {
+      flex: 1;
+      padding: 18px 24px 24px;
+      min-height: 0;
+    }
+
+    .monitor-shell {
+      width: 100%;
+      height: 100%;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      overflow: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    /* Container für das Widget */
+    .widget-wrap {
+      width: 100%;
+      min-height: 100%;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* Optional: versucht etwas Luft rund um das Widget zu schaffen */
+    .widget-inner {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    .footer {
+      padding: 8px 24px 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .title {
+        font-size: 26px;
+      }
+
+      .stage {
+        padding: 12px;
+      }
+
+      .topbar {
+        padding: 14px 12px 8px;
+      }
+
+      .footer {
+        padding: 6px 12px 12px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="topbar">
+    <h1 class="title">Feldkirch Landesgericht</h1>
+    <p class="subtitle">VMOBIL Abfahrtsmonitor</p>
+  </div>
 
-<div class="header">Abfahrten Feldkirch Landesgericht</div>
-<div class="sub">Live-Abfahrten (VMOBIL)</div>
-
-<div class="container">
-    <div class="widget-wrapper">
-        <div data-hfs-widget="true"
+  <div class="stage">
+    <div class="monitor-shell">
+      <div class="widget-wrap">
+        <div class="widget-inner"
+             data-hfs-widget="true"
              data-hfs-widget-sq="true"
              data-hfs-widget-sq-location="A=1@O=Feldkirch Landesgericht@X=9592030@Y=47236085@U=81@L=480082400@p=1774215648@i=A×at:48:824@"
              data-hfs-widget-sq-locationname="Feldkirch Landesgericht">
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
+  <div class="footer">
+    Eingebettet über VMOBIL Widget
+  </div>
 </body>
 </html>
