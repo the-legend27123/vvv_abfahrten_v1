@@ -39,23 +39,6 @@
       overflow: hidden;
     }
 
-    .topbar {
-      padding: 20px 28px 10px;
-    }
-
-    .title {
-      margin: 0;
-      font-size: 34px;
-      line-height: 1.1;
-      font-weight: 700;
-    }
-
-    .subtitle {
-      margin: 8px 0 0;
-      font-size: 15px;
-      color: var(--muted);
-    }
-
     .stage {
       flex: 1;
       min-height: 0;
@@ -109,15 +92,10 @@
       color: #ffffff !important;
     }
 
-    /* Nur das Element selbst schwarz, nicht alle Kinder */
-    .widget-wrap .force-date-black {
-      color: #000000;
-      opacity: 1;
-    }
-
-    .widget-wrap .force-text-black {
-      color: #000000;
-      opacity: 1;
+    /* Normale Texte in Abfahrten schwarz */
+    .widget-wrap .force-black {
+      color: #000000 !important;
+      opacity: 1 !important;
     }
 
     .widget-wrap table,
@@ -133,9 +111,6 @@
         --widget-width: 86.2%;
       }
 
-      .topbar { padding: 16px 16px 8px; }
-      .title { font-size: 26px; }
-      .subtitle { font-size: 14px; }
       .stage { padding: 12px 16px 16px; }
       .monitor-shell { padding: 14px; border-radius: 16px; }
       .widget-wrap { border-radius: 12px; }
@@ -144,11 +119,6 @@
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <h1 class="title">Feldkirch Landesgericht</h1>
-    <p class="subtitle">VMOBIL Abfahrtsmonitor</p>
-  </div>
-
   <div class="stage">
     <div class="monitor-shell">
       <div class="widget-wrap" id="widgetWrap">
@@ -166,11 +136,11 @@
   </div>
 
   <div class="footer">
-    Eingebettet über VMOBIL Widget | Stand 24.03.2026 11:49 | v1
+    Eingebettet über VMOBIL Widget | Stand 24.03.2026 11:54 | v2
   </div>
 
   <script>
-    function isTimeText(text) {
+    function isTimeOnly(text) {
       return /^\s*\d{1,2}:\d{2}\s*$/.test(text);
     }
 
@@ -178,12 +148,17 @@
       return /(\bMo\b|\bDi\b|\bMi\b|\bDo\b|\bFr\b|\bSa\b|\bSo\b)|\d{2}\.\d{2}\.\d{4}/.test(text);
     }
 
+    function isHeaderText(text) {
+      return /^Monitor\s*-\s*/i.test(text);
+    }
+
     function isOccupancyText(text) {
       return /Auslastung/i.test(text);
     }
 
     function isDirectionText(text) {
-      return /→/.test(text) || /Bahnhof|Bhf|Feldkirch|Tisis|Rankweil|Sargans|Gisingen|Altenstadt|Klaus/i.test(text);
+      return text.includes("→") ||
+        /Bahnhof|Bhf|Feldkirch|Tisis|Rankweil|Sargans|Gisingen|Altenstadt|Klaus|Tosters|Letze|Satteins|Nofels|Levis|Bangs/i.test(text);
     }
 
     function isBadge(el) {
@@ -192,72 +167,110 @@
       return bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent";
     }
 
-    function containsTimeDescendant(el) {
-      return Array.from(el.querySelectorAll("*")).some(child => {
-        const txt = (child.textContent || "").trim();
-        return /^\d{1,2}:\d{2}$/.test(txt);
-      });
-    }
-
-    function clearInlineTextColor(el) {
-      el.style.removeProperty("color");
-      el.style.removeProperty("opacity");
-    }
-
-    function styleWidget() {
+    function hideHeaderAndDate() {
       const wrap = document.getElementById("widgetWrap");
       if (!wrap) return;
 
-      const all = Array.from(wrap.querySelectorAll("*")).filter(el => el.children.length === 0);
+      const all = Array.from(wrap.querySelectorAll("*"));
 
       all.forEach(el => {
         const text = (el.textContent || "").trim();
         if (!text) return;
 
-        el.classList.remove("force-text-black", "force-date-black");
-        clearInlineTextColor(el);
-
-        if (isBadge(el)) {
-          el.style.color = "#ffffff";
-          return;
-        }
-
-        if (isTimeText(text)) {
-          return;
-        }
-
-        if (containsTimeDescendant(el)) {
-          return;
-        }
-
-        if (isDateText(text)) {
-          el.classList.add("force-date-black");
-          return;
-        }
-
-        if (isOccupancyText(text) || text.includes("→") || isDirectionText(text)) {
-          el.classList.add("force-text-black");
+        if (isHeaderText(text) || isDateText(text)) {
+          const row = el.closest("tr, .journey, .journeyRow, .row, li, section, article, div");
+          if (row) {
+            row.style.display = "none";
+          } else {
+            el.style.display = "none";
+          }
         }
       });
     }
 
-    function runStylingLoop() {
-      styleWidget();
-      setTimeout(styleWidget, 500);
-      setTimeout(styleWidget, 1200);
-      setTimeout(styleWidget, 2500);
+    function styleLeafTexts() {
+      const wrap = document.getElementById("widgetWrap");
+      if (!wrap) return;
+
+      const leaves = Array.from(wrap.querySelectorAll("*")).filter(el => el.children.length === 0);
+
+      leaves.forEach(el => {
+        const text = (el.textContent || "").trim();
+        if (!text) return;
+
+        el.classList.remove("force-black");
+        el.style.removeProperty("opacity");
+
+        if (isTimeOnly(text)) {
+          return;
+        }
+
+        if (isBadge(el)) {
+          el.style.color = "#ffffff";
+          el.style.opacity = "1";
+          return;
+        }
+
+        if (isOccupancyText(text) || isDirectionText(text)) {
+          el.classList.add("force-black");
+          return;
+        }
+      });
     }
 
-    window.addEventListener("load", runStylingLoop);
+    function forceVisibleRowsBlack() {
+      const wrap = document.getElementById("widgetWrap");
+      if (!wrap) return;
+
+      const candidates = Array.from(wrap.querySelectorAll("div, span, p, td, small, strong"));
+
+      candidates.forEach(el => {
+        const text = (el.textContent || "").trim();
+        if (!text) return;
+        if (isTimeOnly(text)) return;
+        if (isDateText(text)) return;
+        if (isHeaderText(text)) return;
+        if (/Bus\s*\d|Stadtbus|Landbus|Liechtenstein Bus/i.test(text)) return;
+
+        const style = window.getComputedStyle(el);
+        const color = style.color;
+        const opacity = parseFloat(style.opacity || "1");
+
+        const isVeryLightText =
+          color === "rgb(255, 255, 255)" ||
+          opacity < 1;
+
+        if (isVeryLightText) {
+          el.classList.add("force-black");
+        }
+      });
+    }
+
+    function runStyling() {
+      hideHeaderAndDate();
+      styleLeafTexts();
+      forceVisibleRowsBlack();
+    }
+
+    window.addEventListener("load", () => {
+      runStyling();
+      setTimeout(runStyling, 400);
+      setTimeout(runStyling, 1000);
+      setTimeout(runStyling, 2000);
+    });
 
     const observer = new MutationObserver(() => {
-      styleWidget();
+      runStyling();
     });
 
     window.addEventListener("load", () => {
       const wrap = document.getElementById("widgetWrap");
       if (wrap) {
-        observer.observe(wrap, { childList: true, subtree: true, characterData: true });
+        observer.observe(wrap, {
+          childList: true,
+          subtree: true,
+          characterData: true
+        });
       }
     });
 
