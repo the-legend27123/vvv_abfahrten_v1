@@ -21,9 +21,7 @@
       --widget-width: 78.125%;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html, body {
       margin: 0;
@@ -104,12 +102,31 @@
     }
 
     /* Linienbadge weiß */
+    .widget-wrap [style*="background"] *,
     .widget-wrap [class*="line"] *,
     .widget-wrap [class*="badge"] *,
-    .widget-wrap [class*="product"] *,
-    .widget-wrap [class*="serviceline"] *,
-    .widget-wrap [class*="mot-label"] * {
+    .widget-wrap [class*="product"] * {
       color: #ffffff !important;
+    }
+
+    /* Nur sehr gezielt Datum schwarz */
+    .widget-wrap .force-date-black,
+    .widget-wrap .force-date-black * {
+      color: #000000 !important;
+      opacity: 1 !important;
+    }
+
+    /* Fahrtrichtung / Auslastung schwarz */
+    .widget-wrap .force-text-black,
+    .widget-wrap .force-text-black * {
+      color: #000000 !important;
+      opacity: 1 !important;
+    }
+
+    /* Verspätung bewusst NICHT überschreiben */
+    .widget-wrap .keep-delay-color,
+    .widget-wrap .keep-delay-color * {
+      color: inherit !important;
     }
 
     .widget-wrap table,
@@ -125,34 +142,13 @@
         --widget-width: 86.2%;
       }
 
-      .topbar {
-        padding: 16px 16px 8px;
-      }
-
-      .title {
-        font-size: 26px;
-      }
-
-      .subtitle {
-        font-size: 14px;
-      }
-
-      .stage {
-        padding: 12px 16px 16px;
-      }
-
-      .monitor-shell {
-        padding: 14px;
-        border-radius: 16px;
-      }
-
-      .widget-wrap {
-        border-radius: 12px;
-      }
-
-      .footer {
-        padding: 6px 16px 12px;
-      }
+      .topbar { padding: 16px 16px 8px; }
+      .title { font-size: 26px; }
+      .subtitle { font-size: 14px; }
+      .stage { padding: 12px 16px 16px; }
+      .monitor-shell { padding: 14px; border-radius: 16px; }
+      .widget-wrap { border-radius: 12px; }
+      .footer { padding: 6px 16px 12px; }
     }
   </style>
 </head>
@@ -183,102 +179,77 @@
   </div>
 
   <script>
-    function styleDateDirectionAndOccupancy() {
+    function isTimeText(text) {
+      return /^\s*\d{1,2}:\d{2}\s*$/.test(text);
+    }
+
+    function isDateText(text) {
+      return /(\bMo\b|\bDi\b|\bMi\b|\bDo\b|\bFr\b|\bSa\b|\bSo\b)|\d{2}\.\d{2}\.\d{4}/.test(text);
+    }
+
+    function isOccupancyText(text) {
+      return /Auslastung/i.test(text);
+    }
+
+    function isDirectionText(text) {
+      return /→/.test(text) || /Bahnhof|Bhf|Feldkirch|Tisis|Rankweil|Sargans|Gisingen|Altenstadt|Klaus/i.test(text);
+    }
+
+    function isBadge(el) {
+      const style = window.getComputedStyle(el);
+      const bg = style.backgroundColor;
+      return bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent";
+    }
+
+    function styleWidget() {
       const wrap = document.getElementById("widgetWrap");
       if (!wrap) return;
 
-      wrap.querySelectorAll("*").forEach(el => {
-        if (el.dataset.customStyled === "1") return;
-        if (el.children.length > 0) return;
+      const all = wrap.querySelectorAll("*");
 
-        const txt = (el.textContent || "").trim();
-        if (!txt) return;
+      all.forEach(el => {
+        const text = (el.textContent || "").trim();
+        if (!text) return;
 
-        if (/^(Mo|Di|Mi|Do|Fr|Sa|So),?\s*\d{2}\.\d{2}\.\d{4}$/.test(txt) ||
-            /^(Mo|Di|Mi|Do|Fr|Sa|So)$/.test(txt) ||
-            /^\d{2}\.\d{2}\.\d{4}$/.test(txt)) {
-          el.style.color = "#000000";
-          el.style.opacity = "1";
-          el.dataset.customStyled = "1";
+        el.classList.remove("force-text-black", "force-date-black", "keep-delay-color");
+
+        if (isBadge(el)) {
+          el.style.color = "#ffffff";
           return;
         }
 
-        if (/Auslastung/i.test(txt)) {
-          el.style.color = "#000000";
-          el.style.opacity = "1";
-          el.dataset.customStyled = "1";
+        if (isTimeText(text)) {
+          return; // Zeiten nicht anfassen, damit Verspätungen rot bleiben
+        }
+
+        if (isDateText(text)) {
+          el.classList.add("force-date-black");
           return;
         }
 
-        if (
-          /Bahnhof|Bhf|Feldkirch|Tisis|Rankweil|Sargans|Gisingen|Altenstadt|Klaus|Letze|Tosters|Nofels|Bangs|Levis/i.test(txt)
-          || txt.includes("→")
-        ) {
-          el.style.color = "#000000";
-          el.style.opacity = "1";
-          el.dataset.customStyled = "1";
+        if (isOccupancyText(text) || isDirectionText(text)) {
+          el.classList.add("force-text-black");
         }
       });
     }
 
-    function styleTimeColumn() {
-      const wrap = document.getElementById("widgetWrap");
-      if (!wrap) return;
-
-      wrap.querySelectorAll("*").forEach(el => {
-        if (el.dataset.timeStyled === "1") return;
-        if (el.children.length > 0) return;
-
-        const raw = (el.innerText || el.textContent || "").trim();
-        if (!raw) return;
-
-        const matches = raw.match(/\b\d{1,2}:\d{2}\b/g);
-        if (!matches) return;
-
-        const normalized = raw.replace(/\u00a0/g, " ").trim();
-
-        if (matches.length === 2) {
-          el.innerHTML = `
-            <span style="display:block; color:#111111; line-height:1.1;">${matches[0]}</span>
-            <span style="display:block; color:#d4002a; line-height:1.1;">${matches[1]}</span>
-          `;
-          el.dataset.timeStyled = "1";
-          return;
-        }
-
-        if (matches.length === 1 && normalized === matches[0]) {
-          el.innerHTML = `
-            <span style="display:block; color:#111111; line-height:1.1;">${matches[0]}</span>
-          `;
-          el.dataset.timeStyled = "1";
-        }
-      });
+    function runStylingLoop() {
+      styleWidget();
+      setTimeout(styleWidget, 500);
+      setTimeout(styleWidget, 1200);
+      setTimeout(styleWidget, 2500);
     }
 
-    function runStyling() {
-      styleDateDirectionAndOccupancy();
-      styleTimeColumn();
-    }
-
-    window.addEventListener("load", () => {
-      runStyling();
-      setTimeout(runStyling, 500);
-      setTimeout(runStyling, 1200);
-      setTimeout(runStyling, 2500);
-    });
+    window.addEventListener("load", runStylingLoop);
 
     const observer = new MutationObserver(() => {
-      runStyling();
+      styleWidget();
     });
 
     window.addEventListener("load", () => {
       const wrap = document.getElementById("widgetWrap");
       if (wrap) {
-        observer.observe(wrap, {
-          childList: true,
-          subtree: true,
-          characterData: true
-        });
+        observer.observe(wrap, { childList: true, subtree: true, characterData: true });
       }
     });
 
