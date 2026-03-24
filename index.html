@@ -101,34 +101,33 @@
       font-family: Arial, Helvetica, sans-serif !important;
     }
 
-    /* Linienbadge weiß */
-    .force-badge-white,
-    .force-badge-white * {
+    /* Linie / Badge weiß */
+    .widget-wrap [class*="line"] *,
+    .widget-wrap [class*="badge"] *,
+    .widget-wrap [class*="product"] *,
+    .widget-wrap [class*="serviceline"] *,
+    .widget-wrap [class*="mot-label"] * {
       color: #ffffff !important;
     }
 
-    /* Datum / Text schwarz */
-    .force-date-black,
-    .force-date-black * {
+    /* Richtung / Auslastung / Datum schwarz */
+    .force-black,
+    .force-black * {
       color: #000000 !important;
       opacity: 1 !important;
     }
 
-    .force-text-black,
-    .force-text-black * {
-      color: #000000 !important;
-      opacity: 1 !important;
-    }
-
-    /* Zeitfarben */
-    .force-time-black {
+    /* Unsere Zeitfarben */
+    .dep-time-main {
       color: #111111 !important;
-      opacity: 1 !important;
+      display: block;
+      line-height: 1.1;
     }
 
-    .force-time-red {
-      color: #d81b60 !important;
-      opacity: 1 !important;
+    .dep-time-delay {
+      color: #d4002a !important;
+      display: block;
+      line-height: 1.1;
     }
 
     .widget-wrap table,
@@ -157,7 +156,7 @@
 <body>
   <div class="topbar">
     <h1 class="title">Feldkirch Landesgericht</h1>
-    <p class="subtitle">VMOBIL Abfahrtsmonitor TEST</p>
+    <p class="subtitle">VMOBIL Abfahrtsmonitor</p>
   </div>
 
   <div class="stage">
@@ -181,120 +180,75 @@
   </div>
 
   <script>
-    function isTimeText(text) {
-      return /^\d{1,2}:\d{2}$/.test((text || "").trim());
-    }
-
-    function isDateText(text) {
-      return /(\bMo\b|\bDi\b|\bMi\b|\bDo\b|\bFr\b|\bSa\b|\bSo\b)|\d{2}\.\d{2}\.\d{4}/.test(text || "");
-    }
-
-    function isOccupancyText(text) {
-      return /Auslastung/i.test(text || "");
-    }
-
-    function isDirectionText(text) {
-      return /→/.test(text || "") || /Bahnhof|Bhf|Feldkirch|Tisis|Rankweil|Sargans|Gisingen|Altenstadt|Klaus|Letze|Tosters/i.test(text || "");
-    }
-
-    function resetClasses(wrap) {
-      wrap.querySelectorAll(".force-badge-white, .force-date-black, .force-text-black, .force-time-black, .force-time-red")
-        .forEach(el => {
-          el.classList.remove("force-badge-white", "force-date-black", "force-text-black", "force-time-black", "force-time-red");
-        });
-    }
-
-    function styleBadges(wrap) {
-      wrap.querySelectorAll("*").forEach(el => {
-        const style = window.getComputedStyle(el);
-        const bg = style.backgroundColor;
-        if (bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent") {
-          const txt = (el.textContent || "").trim();
-          if (/Bus|Stadtbus|Landbus|Liechtenstein/i.test(txt)) {
-            el.classList.add("force-badge-white");
-          }
-        }
-      });
-    }
-
-    function styleDateAndText(wrap) {
-      wrap.querySelectorAll("*").forEach(el => {
-        const text = (el.textContent || "").trim();
-        if (!text) return;
-
-        if (isDateText(text)) {
-          el.classList.add("force-date-black");
-          return;
-        }
-
-        if (!isTimeText(text) && (isOccupancyText(text) || isDirectionText(text))) {
-          el.classList.add("force-text-black");
-        }
-      });
-    }
-
-    function styleTimes(wrap) {
-      const all = Array.from(wrap.querySelectorAll("*"));
-
-      all.forEach(el => {
-        const children = Array.from(el.children);
-        if (!children.length) return;
-
-        const timeChildren = children.filter(child => {
-          const t = (child.textContent || "").trim();
-          return isTimeText(t);
-        });
-
-        if (timeChildren.length === 2) {
-          timeChildren[0].classList.add("force-time-black");
-          timeChildren[1].classList.add("force-time-red");
-        }
-      });
-
-      all.forEach(el => {
-        const text = (el.textContent || "").trim();
-        if (!isTimeText(text)) return;
-
-        const parent = el.parentElement;
-        if (!parent) return;
-
-        const siblingTimes = Array.from(parent.children).filter(child =>
-          isTimeText((child.textContent || "").trim())
-        );
-
-        if (siblingTimes.length === 1) {
-          el.classList.add("force-time-black");
-        }
-      });
-    }
-
-    function styleWidget() {
+    function markBlackTexts() {
       const wrap = document.getElementById("widgetWrap");
       if (!wrap) return;
 
-      resetClasses(wrap);
-      styleBadges(wrap);
-      styleDateAndText(wrap);
-      styleTimes(wrap);
+      wrap.querySelectorAll("*").forEach(el => {
+        const text = (el.textContent || "").trim();
+
+        if (
+          /Auslastung/i.test(text) ||
+          /Bahnhof|Bhf|Feldkirch|Tisis|Rankweil|Sargans|Gisingen|Altenstadt|Klaus|Letze|Tosters/i.test(text) ||
+          /(\bMo\b|\bDi\b|\bMi\b|\bDo\b|\bFr\b|\bSa\b|\bSo\b)|\d{2}\.\d{2}\.\d{4}/.test(text)
+        ) {
+          el.classList.add("force-black");
+        }
+      });
     }
 
-    function runStylingLoop() {
-      styleWidget();
-      setTimeout(styleWidget, 400);
-      setTimeout(styleWidget, 1000);
-      setTimeout(styleWidget, 2000);
+    function colorDelayTimes() {
+      const wrap = document.getElementById("widgetWrap");
+      if (!wrap) return;
+
+      wrap.querySelectorAll("*").forEach(el => {
+        if (el.dataset.timesProcessed === "1") return;
+        if (el.children.length > 0) return;
+
+        const raw = (el.innerText || el.textContent || "").trim();
+        if (!raw) return;
+
+        const normalized = raw.replace(/\u00a0/g, " ").trim();
+        const matches = normalized.match(/\b\d{1,2}:\d{2}\b/g);
+
+        if (!matches || matches.length !== 2) return;
+
+        const compact = normalized.replace(/\s+/g, " ");
+        const expected = `${matches[0]} ${matches[1]}`;
+        if (compact !== expected) return;
+
+        el.innerHTML = `
+          <span class="dep-time-main">${matches[0]}</span>
+          <span class="dep-time-delay">${matches[1]}</span>
+        `;
+        el.dataset.timesProcessed = "1";
+      });
     }
 
-    window.addEventListener("load", runStylingLoop);
+    function runStyling() {
+      markBlackTexts();
+      colorDelayTimes();
+    }
+
+    window.addEventListener("load", () => {
+      runStyling();
+      setTimeout(runStyling, 500);
+      setTimeout(runStyling, 1200);
+      setTimeout(runStyling, 2500);
+    });
 
     const observer = new MutationObserver(() => {
-      styleWidget();
+      runStyling();
     });
 
     window.addEventListener("load", () => {
       const wrap = document.getElementById("widgetWrap");
       if (wrap) {
-        observer.observe(wrap, { childList: true, subtree: true, characterData: true });
+        observer.observe(wrap, {
+          childList: true,
+          subtree: true,
+          characterData: true
+        });
       }
     });
 
