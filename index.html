@@ -39,6 +39,24 @@
       overflow: hidden;
     }
 
+    .topbar {
+      padding: 20px 28px 10px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.1;
+      font-weight: 700;
+      color: #f5f7fa;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
     .stage {
       flex: 1;
       min-height: 0;
@@ -92,7 +110,7 @@
       color: #ffffff !important;
     }
 
-    /* Normale Texte in Abfahrten schwarz */
+    /* Normale Texte schwarz */
     .widget-wrap .force-black {
       color: #000000 !important;
       opacity: 1 !important;
@@ -111,14 +129,43 @@
         --widget-width: 86.2%;
       }
 
-      .stage { padding: 12px 16px 16px; }
-      .monitor-shell { padding: 14px; border-radius: 16px; }
-      .widget-wrap { border-radius: 12px; }
-      .footer { padding: 6px 16px 12px; }
+      .topbar {
+        padding: 16px 16px 8px;
+      }
+
+      .title {
+        font-size: 26px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+
+      .stage {
+        padding: 12px 16px 16px;
+      }
+
+      .monitor-shell {
+        padding: 14px;
+        border-radius: 16px;
+      }
+
+      .widget-wrap {
+        border-radius: 12px;
+      }
+
+      .footer {
+        padding: 6px 16px 12px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="topbar">
+    <h1 class="title">Feldkirch Landesgericht</h1>
+    <p class="subtitle">VMOBIL Abfahrtsmonitor</p>
+  </div>
+
   <div class="stage">
     <div class="monitor-shell">
       <div class="widget-wrap" id="widgetWrap">
@@ -136,7 +183,7 @@
   </div>
 
   <div class="footer">
-    Eingebettet über VMOBIL Widget | Stand 24.03.2026 11:54 | v2
+    Eingebettet über VMOBIL Widget | Stand 24.03.2026 11:58 | v1
   </div>
 
   <script>
@@ -167,23 +214,18 @@
       return bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent";
     }
 
-    function hideHeaderAndDate() {
+    function hideOnlyHeaderTexts() {
       const wrap = document.getElementById("widgetWrap");
       if (!wrap) return;
 
-      const all = Array.from(wrap.querySelectorAll("*"));
+      const leaves = Array.from(wrap.querySelectorAll("*")).filter(el => el.children.length === 0);
 
-      all.forEach(el => {
+      leaves.forEach(el => {
         const text = (el.textContent || "").trim();
         if (!text) return;
 
         if (isHeaderText(text) || isDateText(text)) {
-          const row = el.closest("tr, .journey, .journeyRow, .row, li, section, article, div");
-          if (row) {
-            row.style.display = "none";
-          } else {
-            el.style.display = "none";
-          }
+          el.style.display = "none";
         }
       });
     }
@@ -201,9 +243,9 @@
         el.classList.remove("force-black");
         el.style.removeProperty("opacity");
 
-        if (isTimeOnly(text)) {
-          return;
-        }
+        if (isTimeOnly(text)) return;
+
+        if (isHeaderText(text) || isDateText(text)) return;
 
         if (isBadge(el)) {
           el.style.color = "#ffffff";
@@ -213,43 +255,42 @@
 
         if (isOccupancyText(text) || isDirectionText(text)) {
           el.classList.add("force-black");
-          return;
         }
       });
     }
 
-    function forceVisibleRowsBlack() {
+    function forceVeryLightTextsBlack() {
       const wrap = document.getElementById("widgetWrap");
       if (!wrap) return;
 
-      const candidates = Array.from(wrap.querySelectorAll("div, span, p, td, small, strong"));
+      const leaves = Array.from(wrap.querySelectorAll("*")).filter(el => el.children.length === 0);
 
-      candidates.forEach(el => {
+      leaves.forEach(el => {
         const text = (el.textContent || "").trim();
         if (!text) return;
         if (isTimeOnly(text)) return;
-        if (isDateText(text)) return;
-        if (isHeaderText(text)) return;
+        if (isHeaderText(text) || isDateText(text)) return;
         if (/Bus\s*\d|Stadtbus|Landbus|Liechtenstein Bus/i.test(text)) return;
 
         const style = window.getComputedStyle(el);
         const color = style.color;
         const opacity = parseFloat(style.opacity || "1");
 
-        const isVeryLightText =
+        const isVeryLight =
           color === "rgb(255, 255, 255)" ||
+          color === "rgba(255, 255, 255, 1)" ||
           opacity < 1;
 
-        if (isVeryLightText) {
+        if (isVeryLight) {
           el.classList.add("force-black");
         }
       });
     }
 
     function runStyling() {
-      hideHeaderAndDate();
+      hideOnlyHeaderTexts();
       styleLeafTexts();
-      forceVisibleRowsBlack();
+      forceVeryLightTextsBlack();
     }
 
     window.addEventListener("load", () => {
