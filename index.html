@@ -156,7 +156,7 @@
 <body>
   <div class="topbar">
     <h1 class="title">Feldkirch Landesgericht</h1>
-    <p class="subtitle">VMOBIL Abfahrtsmonitor</p>
+    <p class="subtitle">VMOBIL Abfahrtsmonitor v1</p>
   </div>
 
   <div class="stage">
@@ -180,81 +180,83 @@
   </div>
 
   <script>
-    function markBlackTexts() {
-      const wrap = document.getElementById("widgetWrap");
-      if (!wrap) return;
+  function styleDateAndTimes() {
+    const wrap = document.getElementById("widgetWrap");
+    if (!wrap) return;
 
-      wrap.querySelectorAll("*").forEach(el => {
-        const text = (el.textContent || "").trim();
+    /* DI + Datum schwarz */
+    wrap.querySelectorAll("*").forEach(el => {
+      const txt = (el.textContent || "").trim();
 
-        if (
-          /Auslastung/i.test(text) ||
-          /Bahnhof|Bhf|Feldkirch|Tisis|Rankweil|Sargans|Gisingen|Altenstadt|Klaus|Letze|Tosters/i.test(text) ||
-          /(\bMo\b|\bDi\b|\bMi\b|\bDo\b|\bFr\b|\bSa\b|\bSo\b)|\d{2}\.\d{2}\.\d{4}/.test(text)
-        ) {
-          el.classList.add("force-black");
-        }
-      });
-    }
-
-    function colorDelayTimes() {
-      const wrap = document.getElementById("widgetWrap");
-      if (!wrap) return;
-
-      wrap.querySelectorAll("*").forEach(el => {
-        if (el.dataset.timesProcessed === "1") return;
-        if (el.children.length > 0) return;
-
-        const raw = (el.innerText || el.textContent || "").trim();
-        if (!raw) return;
-
-        const normalized = raw.replace(/\u00a0/g, " ").trim();
-        const matches = normalized.match(/\b\d{1,2}:\d{2}\b/g);
-
-        if (!matches || matches.length !== 2) return;
-
-        const compact = normalized.replace(/\s+/g, " ");
-        const expected = `${matches[0]} ${matches[1]}`;
-        if (compact !== expected) return;
-
-        el.innerHTML = `
-          <span class="dep-time-main">${matches[0]}</span>
-          <span class="dep-time-delay">${matches[1]}</span>
-        `;
-        el.dataset.timesProcessed = "1";
-      });
-    }
-
-    function runStyling() {
-      markBlackTexts();
-      colorDelayTimes();
-    }
-
-    window.addEventListener("load", () => {
-      runStyling();
-      setTimeout(runStyling, 500);
-      setTimeout(runStyling, 1200);
-      setTimeout(runStyling, 2500);
-    });
-
-    const observer = new MutationObserver(() => {
-      runStyling();
-    });
-
-    window.addEventListener("load", () => {
-      const wrap = document.getElementById("widgetWrap");
-      if (wrap) {
-        observer.observe(wrap, {
-          childList: true,
-          subtree: true,
-          characterData: true
+      if (/^(Mo|Di|Mi|Do|Fr|Sa|So),?\s*\d{2}\.\d{2}\.\d{4}$/.test(txt) ||
+          /^(Mo|Di|Mi|Do|Fr|Sa|So)$/.test(txt) ||
+          /^\d{2}\.\d{2}\.\d{4}$/.test(txt)) {
+        el.style.color = "#000";
+        el.querySelectorAll("*").forEach(child => {
+          child.style.color = "#000";
         });
       }
     });
 
-    setInterval(() => {
-      window.location.reload();
-    }, 60000);
-  </script>
+    /* Nur Uhrzeit-Spalte bearbeiten */
+    wrap.querySelectorAll("*").forEach(el => {
+      if (el.dataset.timeStyled === "1") return;
+      if (el.children.length > 0) return;
+
+      const raw = (el.innerText || el.textContent || "").trim();
+      if (!raw) return;
+
+      const matches = raw.match(/\b\d{1,2}:\d{2}\b/g);
+      if (!matches) return;
+
+      /* genau 2 Uhrzeiten = geplante Zeit + Verspätung */
+      if (matches.length === 2) {
+        el.innerHTML = `
+          <span style="display:block; color:#111; line-height:1.1;">${matches[0]}</span>
+          <span style="display:block; color:#d4002a; line-height:1.1;">${matches[1]}</span>
+        `;
+        el.dataset.timeStyled = "1";
+      }
+
+      /* genau 1 Uhrzeit = normal schwarz */
+      if (matches.length === 1 && raw === matches[0]) {
+        el.innerHTML = `
+          <span style="display:block; color:#111; line-height:1.1;">${matches[0]}</span>
+        `;
+        el.dataset.timeStyled = "1";
+      }
+    });
+  }
+
+  function runStyling() {
+    styleDateAndTimes();
+  }
+
+  window.addEventListener("load", () => {
+    runStyling();
+    setTimeout(runStyling, 500);
+    setTimeout(runStyling, 1200);
+    setTimeout(runStyling, 2500);
+  });
+
+  const observer = new MutationObserver(() => {
+    runStyling();
+  });
+
+  window.addEventListener("load", () => {
+    const wrap = document.getElementById("widgetWrap");
+    if (wrap) {
+      observer.observe(wrap, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+    }
+  });
+
+  setInterval(() => {
+    window.location.reload();
+  }, 60000);
+</script>
 </body>
 </html>
