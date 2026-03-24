@@ -20,7 +20,7 @@
       --shadow: 0 10px 30px rgba(0,0,0,0.28);
 
       /* Hier Zoom anpassen */
-      --widget-scale: 3;
+      --widget-scale: 2.5;
       --widget-width: 78.125%;
     }
 
@@ -137,6 +137,56 @@
       color: #2a2f35 !important;
       opacity: 1 !important;
     }
+
+    /* Lesbarkeit im Widget verbessern */
+.widget-wrap,
+.widget-wrap * {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.widget-wrap a,
+.widget-wrap span,
+.widget-wrap div,
+.widget-wrap td,
+.widget-wrap th,
+.widget-wrap p,
+.widget-wrap small,
+.widget-wrap strong {
+  color: #1c1f23 !important;
+}
+
+/* Richtung/Ziel dunkler */
+.widget-wrap .journey-route-desc,
+.widget-wrap .journey-direction,
+.widget-wrap .direction,
+.widget-wrap .destination,
+.widget-wrap .towards,
+.widget-wrap .prod,
+.widget-wrap .label,
+.widget-wrap .mot,
+.widget-wrap .station,
+.widget-wrap .route,
+.widget-wrap [class*="direction"],
+.widget-wrap [class*="destination"],
+.widget-wrap [class*="towards"],
+.widget-wrap [class*="route"],
+.widget-wrap [class*="desc"] {
+  color: #2a2f35 !important;
+  opacity: 1 !important;
+}
+
+/* Text in grünen Linienkästen weiß */
+.widget-wrap [class*="line"],
+.widget-wrap [class*="product"],
+.widget-wrap [class*="badge"],
+.widget-wrap [class*="mot-label"],
+.widget-wrap [class*="serviceline"],
+.widget-wrap [style*="background-color: rgb(0, 138, 67)"],
+.widget-wrap [style*="background-color:#008a43"],
+.widget-wrap [style*="background-color: #008a43"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
 
     .widget-wrap [style*="color: rgb(255, 255, 255)"],
     .widget-wrap [style*="color:#fff"],
