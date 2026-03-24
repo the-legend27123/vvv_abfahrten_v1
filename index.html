@@ -255,7 +255,9 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
       display: flex;
       flex-direction: column;
+      align-items: stretch;
       gap: 10px;
+      overflow: hidden;
     }
 
     .widget-meta {
@@ -263,8 +265,9 @@
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      padding: 0 6px;
+      padding: 0 8px;
       min-height: 34px;
+      flex: 0 0 auto;
     }
 
     .widget-columns {
@@ -280,6 +283,18 @@
       color: #bcd0e3;
     }
 
+    .col-title-abfahrt {
+      transform: translateX(0px);
+    }
+
+    .col-title-linie {
+      transform: translateX(0px);
+    }
+
+    .col-title-richtung {
+      transform: translateX(0px);
+    }
+
     .widget-updated {
       flex: 0 0 auto;
       font-size: 12px;
@@ -287,16 +302,25 @@
       white-space: nowrap;
     }
 
+    .widget-stage {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
     .widget-wrap {
       width: 100%;
-      height: 100%;
-      min-height: 100%;
+      height: auto;
+      min-height: 0;
       background: #ffffff;
       border-radius: 16px;
       overflow-y: auto;
       overflow-x: hidden;
       position: relative;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+      box-shadow:
+        inset 0 0 0 1px rgba(0,0,0,0.05),
+        0 8px 24px rgba(0,0,0,0.12);
       scroll-behavior: smooth;
     }
 
@@ -304,7 +328,7 @@
       transform: scale(var(--widget-scale));
       transform-origin: top left;
       width: var(--widget-width);
-      min-height: 100%;
+      min-height: 0;
     }
 
     .footer {
@@ -360,6 +384,24 @@
     .widget-wrap td,
     .widget-wrap th {
       border-color: rgba(0,0,0,0.12) !important;
+    }
+
+    .widget-wrap::-webkit-scrollbar,
+    .widget-stage::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    .widget-wrap::-webkit-scrollbar-track,
+    .widget-stage::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+    }
+
+    .widget-wrap::-webkit-scrollbar-thumb,
+    .widget-stage::-webkit-scrollbar-thumb {
+      background: rgba(125,145,168,0.55);
+      border-radius: 10px;
     }
 
     @media (max-width: 1100px) {
@@ -493,21 +535,23 @@
       <div class="widget-card">
         <div class="widget-meta">
           <div class="widget-columns">
-            <span>Abfahrt</span>
-            <span>Linie</span>
-            <span>Richtung</span>
+            <span class="col-title-abfahrt">Abfahrt</span>
+            <span class="col-title-linie">Linie</span>
+            <span class="col-title-richtung">Richtung</span>
           </div>
           <div class="widget-updated" id="lastUpdated">Zuletzt aktualisiert: --:--:--</div>
         </div>
 
-        <div class="widget-wrap" id="widgetWrap">
-          <div class="zoom-wrap">
-            <div
-              data-hfs-widget="true"
-              data-hfs-widget-sq="true"
-              data-hfs-widget-sq-location="A=1@O=Feldkirch Landesgericht@X=9592030@Y=47236085@U=81@L=480082400@p=1774303212@i=A×at:48:824@"
-              data-hfs-widget-sq-locationname="Feldkirch Landesgericht"
-              style="width:100%;">
+        <div class="widget-stage">
+          <div class="widget-wrap" id="widgetWrap">
+            <div class="zoom-wrap">
+              <div
+                data-hfs-widget="true"
+                data-hfs-widget-sq="true"
+                data-hfs-widget-sq-location="A=1@O=Feldkirch Landesgericht@X=9592030@Y=47236085@U=81@L=480082400@p=1774303212@i=A×at:48:824@"
+                data-hfs-widget-sq-locationname="Feldkirch Landesgericht"
+                style="width:100%;">
+              </div>
             </div>
           </div>
         </div>
@@ -520,7 +564,7 @@
       <div class="footer-left">
         <span>VMOBIL Widget</span>
         <span class="footer-sep">•</span>
-        <span>Stand: 24.03.2026 17:07</span>
+        <span>Stand: 24.03.2026 17:50</span>
       </div>
       <div class="footer-right">
         <span>Design v6</span>
@@ -529,7 +573,7 @@
   </div>
 
   <script>
-    const AUTO_SCROLL_TOP = 140;
+    const AUTO_SCROLL_TOP = 135;
 
     function isTimeOnly(text) {
       return /^\s*\d{1,2}:\d{2}\s*$/.test(text);
@@ -574,6 +618,20 @@
       const ss = String(now.getSeconds()).padStart(2, "0");
 
       el.textContent = `Zuletzt aktualisiert: ${hh}:${mm}:${ss}`;
+    }
+
+    function syncWidgetHeight() {
+      const wrap = document.getElementById("widgetWrap");
+      const zoom = wrap ? wrap.querySelector(".zoom-wrap") : null;
+      const stage = document.querySelector(".widget-stage");
+
+      if (!wrap || !zoom || !stage) return;
+
+      const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--widget-scale")) || 1;
+      const naturalHeight = zoom.scrollHeight * scale;
+      const maxHeight = stage.clientHeight;
+
+      wrap.style.height = Math.min(naturalHeight, maxHeight) + "px";
     }
 
     function hideOnlyWidgetHeader() {
@@ -680,6 +738,7 @@
       styleLeafTexts();
       forceVeryLightTextsBlack();
       updateLastUpdated();
+      syncWidgetHeight();
     }
 
     window.addEventListener("load", () => {
@@ -700,6 +759,10 @@
         runStyling();
         scrollWidgetToPosition();
       }, 2000);
+    });
+
+    window.addEventListener("resize", () => {
+      runStyling();
     });
 
     const observer = new MutationObserver(() => {
