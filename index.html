@@ -137,14 +137,14 @@
       color: #ffffff !important;
     }
 
-    /* Texte gezielt schwarz */
+    /* Texte gezielt einfärben */
     .widget-wrap .force-black {
       color: #000000 !important;
       opacity: 1 !important;
     }
 
     .widget-wrap .force-date-black {
-      color: #000000 !important;
+      color: #5d5d5d !important;
       opacity: 1 !important;
     }
 
@@ -227,7 +227,7 @@
   </div>
 
   <div class="footer">
-    Eingebettet über VMOBIL Widget | Stand 24.03.2026 12:04 | v2
+    Eingebettet über VMOBIL Widget
   </div>
 
   <script>
@@ -249,7 +249,7 @@
 
     function isDirectionText(text) {
       return text.includes("→") ||
-        /Bahnhof|Bhf|Feldkirch|Tisis|Rankweil|Sargans|Gisingen|Altenstadt|Klaus|Tosters|Letze|Satteins|Nofels|Levis|Bangs|Schaan/i.test(text);
+        /Bahnhof|Bhf|Feldkirch|Tisis|Letze|Rankweil|Sargans|Gisingen|Altenstadt|Klaus|Tosters|Satteins|Nofels|Levis|Bangs|Schaan|LKH|Landeskrankenhaus|Muntlix|Eschen/i.test(text);
     }
 
     function isLineText(text) {
@@ -282,9 +282,9 @@
       const wrap = document.getElementById("widgetWrap");
       if (!wrap) return;
 
-      const leaves = Array.from(wrap.querySelectorAll("*")).filter(el => el.children.length === 0);
+      const all = Array.from(wrap.querySelectorAll("*"));
 
-      leaves.forEach(el => {
+      all.forEach(el => {
         const text = (el.textContent || "").trim();
         if (!text) return;
 
@@ -316,14 +316,17 @@
       const wrap = document.getElementById("widgetWrap");
       if (!wrap) return;
 
-      const leaves = Array.from(wrap.querySelectorAll("*")).filter(el => el.children.length === 0);
+      const all = Array.from(wrap.querySelectorAll("*"));
 
-      leaves.forEach(el => {
+      all.forEach(el => {
         const text = (el.textContent || "").trim();
         if (!text) return;
+
         if (isTimeOnly(text)) return;
         if (isHeaderText(text)) return;
         if (isLineText(text)) return;
+        if (isDateText(text)) return;
+        if (isOccupancyText(text)) return;
 
         const style = window.getComputedStyle(el);
         const color = style.color;
@@ -332,11 +335,19 @@
         const isVeryLight =
           color === "rgb(255, 255, 255)" ||
           color === "rgba(255, 255, 255, 1)" ||
-          opacity < 1;
+          opacity < 1 ||
+          color === "rgb(239, 239, 239)" ||
+          color === "rgb(240, 240, 240)" ||
+          color === "rgb(241, 241, 241)" ||
+          color === "rgb(242, 242, 242)";
 
-        if (isDateText(text) || isOccupancyText(text) || isDirectionText(text)) {
-          el.classList.add("force-black");
-        } else if (isVeryLight) {
+        const looksLikeDirection =
+          text.length > 2 &&
+          !/^\d{1,2}:\d{2}$/.test(text) &&
+          !/Auslastung/i.test(text) &&
+          !/Bus\s*\d|Stadtbus|Landbus|Liechtenstein Bus/i.test(text);
+
+        if (isVeryLight && looksLikeDirection) {
           el.classList.add("force-black");
         }
       });
