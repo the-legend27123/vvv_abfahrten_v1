@@ -109,24 +109,15 @@
       color: #ffffff !important;
     }
 
-    /* Nur sehr gezielt Datum schwarz */
-    .widget-wrap .force-date-black,
-    .widget-wrap .force-date-black * {
-      color: #000000 !important;
-      opacity: 1 !important;
+    /* Nur das Element selbst schwarz, nicht alle Kinder */
+    .widget-wrap .force-date-black {
+      color: #000000;
+      opacity: 1;
     }
 
-    /* Fahrtrichtung / Auslastung schwarz */
-    .widget-wrap .force-text-black,
-    .widget-wrap .force-text-black * {
-      color: #000000 !important;
-      opacity: 1 !important;
-    }
-
-    /* Verspätung bewusst NICHT überschreiben */
-    .widget-wrap .keep-delay-color,
-    .widget-wrap .keep-delay-color * {
-      color: inherit !important;
+    .widget-wrap .force-text-black {
+      color: #000000;
+      opacity: 1;
     }
 
     .widget-wrap table,
@@ -175,7 +166,7 @@
   </div>
 
   <div class="footer">
-    Eingebettet über VMOBIL Widget
+    Eingebettet über VMOBIL Widget | Stand 24.03.2026 11:49 | v1
   </div>
 
   <script>
@@ -201,17 +192,30 @@
       return bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent";
     }
 
+    function containsTimeDescendant(el) {
+      return Array.from(el.querySelectorAll("*")).some(child => {
+        const txt = (child.textContent || "").trim();
+        return /^\d{1,2}:\d{2}$/.test(txt);
+      });
+    }
+
+    function clearInlineTextColor(el) {
+      el.style.removeProperty("color");
+      el.style.removeProperty("opacity");
+    }
+
     function styleWidget() {
       const wrap = document.getElementById("widgetWrap");
       if (!wrap) return;
 
-      const all = wrap.querySelectorAll("*");
+      const all = Array.from(wrap.querySelectorAll("*")).filter(el => el.children.length === 0);
 
       all.forEach(el => {
         const text = (el.textContent || "").trim();
         if (!text) return;
 
-        el.classList.remove("force-text-black", "force-date-black", "keep-delay-color");
+        el.classList.remove("force-text-black", "force-date-black");
+        clearInlineTextColor(el);
 
         if (isBadge(el)) {
           el.style.color = "#ffffff";
@@ -219,7 +223,11 @@
         }
 
         if (isTimeText(text)) {
-          return; // Zeiten nicht anfassen, damit Verspätungen rot bleiben
+          return;
+        }
+
+        if (containsTimeDescendant(el)) {
+          return;
         }
 
         if (isDateText(text)) {
@@ -227,7 +235,7 @@
           return;
         }
 
-        if (isOccupancyText(text) || isDirectionText(text)) {
+        if (isOccupancyText(text) || text.includes("→") || isDirectionText(text)) {
           el.classList.add("force-text-black");
         }
       });
