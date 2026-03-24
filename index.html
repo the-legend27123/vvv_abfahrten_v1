@@ -18,7 +18,7 @@
       --muted: #aab4bf;
       --shadow: 0 10px 30px rgba(0,0,0,0.28);
 
-      /* Hier Größe des Widget-Inhalts anpassen */
+      /* Größe des Widgets */
       --widget-scale: 1.90;
       --widget-width: 78.125%;
     }
@@ -101,13 +101,13 @@
       color: var(--muted);
     }
 
-    /* Widget-Lesbarkeit */
+    /* Allgemeine Lesbarkeit */
     .widget-wrap,
     .widget-wrap * {
       font-family: Arial, Helvetica, sans-serif !important;
     }
 
-    /* Standardtexte im Widget dunkel */
+    /* Standardtexte dunkel */
     .widget-wrap a,
     .widget-wrap span,
     .widget-wrap div,
@@ -129,7 +129,7 @@
       color: #000000 !important;
     }
 
-    /* Richtung/Ziel gut lesbar */
+    /* Richtung / Ziel dunkel */
     .widget-wrap .journey-route-desc,
     .widget-wrap .journey-direction,
     .widget-wrap .direction,
@@ -159,32 +159,23 @@
       color: #ffffff !important;
     }
 
-    /* Verspätung / zweite Zeit rot */
-    .widget-wrap [class*="delay"],
-    .widget-wrap [class*="delay"] *,
-    .widget-wrap [class*="delayed"],
-    .widget-wrap [class*="delayed"] *,
-    .widget-wrap [class*="realtime"],
-    .widget-wrap [class*="realtime"] *,
-    .widget-wrap [class*="prognosis"],
-    .widget-wrap [class*="prognosis"] *,
-    .widget-wrap [class*="rtTime"],
-    .widget-wrap [class*="rtTime"] * {
-      color: #d10000 !important;
-    }
-
-    /* Falls die zwei Zeiten einfach untereinander im selben Block stehen:
-       erste schwarz, zweite rot */
+    /* Nur die zweite Zeit rot */
     .widget-wrap [class*="time"] span:last-child,
     .widget-wrap [class*="dep"] span:last-child,
-    .widget-wrap [class*="departure"] span:last-child {
+    .widget-wrap [class*="departure"] span:last-child,
+    .widget-wrap [class*="time"] div:last-child,
+    .widget-wrap [class*="dep"] div:last-child,
+    .widget-wrap [class*="departure"] div:last-child {
       color: #d10000 !important;
     }
 
-    /* Erste Zeit sicher dunkel */
+    /* Erste Zeit schwarz */
     .widget-wrap [class*="time"] span:first-child,
     .widget-wrap [class*="dep"] span:first-child,
-    .widget-wrap [class*="departure"] span:first-child {
+    .widget-wrap [class*="departure"] span:first-child,
+    .widget-wrap [class*="time"] div:first-child,
+    .widget-wrap [class*="dep"] div:first-child,
+    .widget-wrap [class*="departure"] div:first-child {
       color: #1c1f23 !important;
     }
 
