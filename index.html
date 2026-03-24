@@ -13,14 +13,13 @@
   <style>
     :root {
       --bg: #0b0f14;
-      --panel: #121821;
       --panel-border: rgba(255,255,255,0.08);
       --text: #f5f7fa;
       --muted: #aab4bf;
       --shadow: 0 10px 30px rgba(0,0,0,0.28);
 
-      /* Hier Zoom anpassen */
-      --widget-scale: 2.5;
+      /* Hier Größe des Widget-Inhalts anpassen */
+      --widget-scale: 1.90;
       --widget-width: 78.125%;
     }
 
@@ -102,12 +101,13 @@
       color: var(--muted);
     }
 
-    /* Lesbarkeit im Widget verbessern */
+    /* Widget-Lesbarkeit */
     .widget-wrap,
     .widget-wrap * {
       font-family: Arial, Helvetica, sans-serif !important;
     }
 
+    /* Standardtexte im Widget dunkel */
     .widget-wrap a,
     .widget-wrap span,
     .widget-wrap div,
@@ -119,15 +119,12 @@
       color: #1c1f23 !important;
     }
 
+    /* Richtung/Ziel gut lesbar */
     .widget-wrap .journey-route-desc,
     .widget-wrap .journey-direction,
     .widget-wrap .direction,
     .widget-wrap .destination,
     .widget-wrap .towards,
-    .widget-wrap .prod,
-    .widget-wrap .label,
-    .widget-wrap .mot,
-    .widget-wrap .station,
     .widget-wrap .route,
     .widget-wrap [class*="direction"],
     .widget-wrap [class*="destination"],
@@ -138,81 +135,21 @@
       opacity: 1 !important;
     }
 
-    /* Lesbarkeit im Widget verbessern */
-.widget-wrap,
-.widget-wrap * {
-  font-family: Arial, Helvetica, sans-serif !important;
-}
-
-.widget-wrap a,
-.widget-wrap span,
-.widget-wrap div,
-.widget-wrap td,
-.widget-wrap th,
-.widget-wrap p,
-.widget-wrap small,
-.widget-wrap strong {
-  color: #1c1f23 !important;
-}
-
-/* Richtung/Ziel dunkler */
-.widget-wrap .journey-route-desc,
-.widget-wrap .journey-direction,
-.widget-wrap .direction,
-.widget-wrap .destination,
-.widget-wrap .towards,
-.widget-wrap .prod,
-.widget-wrap .label,
-.widget-wrap .mot,
-.widget-wrap .station,
-.widget-wrap .route,
-.widget-wrap [class*="direction"],
-.widget-wrap [class*="destination"],
-.widget-wrap [class*="towards"],
-.widget-wrap [class*="route"],
-.widget-wrap [class*="desc"] {
-  color: #2a2f35 !important;
-  opacity: 1 !important;
-}
-
-/* Text in grünen Linienkästen weiß */
-.widget-wrap [class*="line"],
-.widget-wrap [class*="product"],
-.widget-wrap [class*="badge"],
-.widget-wrap [class*="mot-label"],
-.widget-wrap [class*="serviceline"],
-.widget-wrap [style*="background-color: rgb(0, 138, 67)"],
-.widget-wrap [style*="background-color:#008a43"],
-.widget-wrap [style*="background-color: #008a43"] {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-    .widget-wrap [style*="color: rgb(255, 255, 255)"],
-    .widget-wrap [style*="color:#fff"],
-    .widget-wrap [style*="color: #fff"],
-    .widget-wrap [style*="color:#ffffff"],
-    .widget-wrap [style*="color: #ffffff"] {
-      color: #2a2f35 !important;
+    /* Nur Badge-Inhalt weiß */
+    .widget-wrap [class*="line"] *,
+    .widget-wrap [class*="product"] *,
+    .widget-wrap [class*="badge"] *,
+    .widget-wrap [class*="mot-label"] *,
+    .widget-wrap [class*="serviceline"] * {
+      color: #ffffff !important;
     }
 
+    /* Tabellenlinien etwas klarer */
     .widget-wrap table,
     .widget-wrap tr,
     .widget-wrap td,
     .widget-wrap th {
       border-color: rgba(0,0,0,0.12) !important;
-    }
-
-    /* optional etwas kräftigere Zeit-/Textdarstellung */
-    .widget-wrap [class*="time"],
-    .widget-wrap [class*="date"],
-    .widget-wrap [class*="journey"],
-    .widget-wrap [class*="platform"],
-    .widget-wrap [class*="line"],
-    .widget-wrap [class*="product"],
-    .widget-wrap [class*="mot-label"],
-    .widget-wrap [class*="badge"] {
-      opacity: 1 !important;
     }
 
     @media (max-width: 900px) {
