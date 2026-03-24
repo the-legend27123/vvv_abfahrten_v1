@@ -119,6 +119,16 @@
       color: #1c1f23 !important;
     }
 
+    /* Wochentag + Datum schwarz */
+    .widget-wrap [class*="date"],
+    .widget-wrap [class*="date"] *,
+    .widget-wrap [class*="day"],
+    .widget-wrap [class*="day"] *,
+    .widget-wrap [class*="weekday"],
+    .widget-wrap [class*="weekday"] * {
+      color: #000000 !important;
+    }
+
     /* Richtung/Ziel gut lesbar */
     .widget-wrap .journey-route-desc,
     .widget-wrap .journey-direction,
@@ -135,13 +145,47 @@
       opacity: 1 !important;
     }
 
-    /* Nur Badge-Inhalt weiß */
+    /* Linien / Badge weiß */
+    .widget-wrap [class*="line"],
     .widget-wrap [class*="line"] *,
+    .widget-wrap [class*="product"],
     .widget-wrap [class*="product"] *,
+    .widget-wrap [class*="badge"],
     .widget-wrap [class*="badge"] *,
+    .widget-wrap [class*="mot-label"],
     .widget-wrap [class*="mot-label"] *,
+    .widget-wrap [class*="serviceline"],
     .widget-wrap [class*="serviceline"] * {
       color: #ffffff !important;
+    }
+
+    /* Verspätung / zweite Zeit rot */
+    .widget-wrap [class*="delay"],
+    .widget-wrap [class*="delay"] *,
+    .widget-wrap [class*="delayed"],
+    .widget-wrap [class*="delayed"] *,
+    .widget-wrap [class*="realtime"],
+    .widget-wrap [class*="realtime"] *,
+    .widget-wrap [class*="prognosis"],
+    .widget-wrap [class*="prognosis"] *,
+    .widget-wrap [class*="rtTime"],
+    .widget-wrap [class*="rtTime"] * {
+      color: #d10000 !important;
+    }
+
+    /* Falls die zwei Zeiten einfach untereinander im selben Block stehen:
+       erste schwarz, zweite rot */
+    .widget-wrap [class*="time"] span:last-child,
+    .widget-wrap [class*="dep"] span:last-child,
+    .widget-wrap [class*="departure"] span:last-child {
+      color: #d10000 !important;
+    }
+
+    /* Erste Zeit sicher dunkel */
+    .widget-wrap [class*="time"] span:first-child,
+    .widget-wrap [class*="dep"] span:first-child,
+    .widget-wrap [class*="departure"] span:first-child {
+      color: #1c1f23 !important;
     }
 
     /* Tabellenlinien etwas klarer */
