@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Feldkirch Landesgericht – VMOBIL Abfahrtsmonitor</title>
+  <title>Feldkirch Landesgericht – Abfahrtsmonitor</title>
 
   <script
     type="text/javascript"
@@ -18,8 +18,8 @@
       --muted: #aab4bf;
       --shadow: 0 10px 30px rgba(0,0,0,0.28);
 
-      /* Größe des Widgets */
-      --widget-scale: 1.90;
+      /* Widget-Größe */
+      --widget-scale: 1.9;
       --widget-width: 78.125%;
     }
 
@@ -84,7 +84,6 @@
       background: #ffffff;
       border-radius: 16px;
       overflow: auto;
-      padding: 0;
       position: relative;
     }
 
@@ -101,82 +100,19 @@
       color: var(--muted);
     }
 
-    /* Allgemeine Lesbarkeit */
+    /* Nur Schriftart setzen, keine Farben global überschreiben */
     .widget-wrap,
     .widget-wrap * {
       font-family: Arial, Helvetica, sans-serif !important;
     }
 
-    /* Standardtexte dunkel */
-    .widget-wrap a,
-    .widget-wrap span,
-    .widget-wrap div,
-    .widget-wrap td,
-    .widget-wrap th,
-    .widget-wrap p,
-    .widget-wrap small,
-    .widget-wrap strong {
-      color: #1c1f23 !important;
-    }
-
-    /* Wochentag + Datum schwarz */
-    .widget-wrap [class*="date"],
-    .widget-wrap [class*="date"] *,
-    .widget-wrap [class*="day"],
-    .widget-wrap [class*="day"] *,
-    .widget-wrap [class*="weekday"],
-    .widget-wrap [class*="weekday"] * {
-      color: #000000 !important;
-    }
-
-    /* Richtung / Ziel dunkel */
-    .widget-wrap .journey-route-desc,
-    .widget-wrap .journey-direction,
-    .widget-wrap .direction,
-    .widget-wrap .destination,
-    .widget-wrap .towards,
-    .widget-wrap .route,
-    .widget-wrap [class*="direction"],
-    .widget-wrap [class*="destination"],
-    .widget-wrap [class*="towards"],
-    .widget-wrap [class*="route"],
-    .widget-wrap [class*="desc"] {
-      color: #2a2f35 !important;
-      opacity: 1 !important;
-    }
-
-    /* Linien / Badge weiß */
-    .widget-wrap [class*="line"],
+    /* Nur Linien/Badge weiß machen */
     .widget-wrap [class*="line"] *,
-    .widget-wrap [class*="product"],
-    .widget-wrap [class*="product"] *,
-    .widget-wrap [class*="badge"],
     .widget-wrap [class*="badge"] *,
-    .widget-wrap [class*="mot-label"],
-    .widget-wrap [class*="mot-label"] *,
-    .widget-wrap [class*="serviceline"],
-    .widget-wrap [class*="serviceline"] * {
+    .widget-wrap [class*="product"] *,
+    .widget-wrap [class*="serviceline"] *,
+    .widget-wrap [class*="mot-label"] * {
       color: #ffffff !important;
-    }
-
-    /* Nur die zweite Zeit rot */
-    .widget-wrap [class*="time"] span:last-child,
-    .widget-wrap [class*="dep"] span:last-child,
-    .widget-wrap [class*="departure"] span:last-child,
-    .widget-wrap [class*="time"] div:last-child,
-    .widget-wrap [class*="dep"] div:last-child,
-    .widget-wrap [class*="departure"] div:last-child {
-      color: #d10000 !important;
-    }
-
-    /* Erste Zeit schwarz */
-    .widget-wrap [class*="time"] span:first-child,
-    .widget-wrap [class*="dep"] span:first-child,
-    .widget-wrap [class*="departure"] span:first-child,
-    .widget-wrap [class*="time"] div:first-child,
-    .widget-wrap [class*="dep"] div:first-child,
-    .widget-wrap [class*="departure"] div:first-child {
-      color: #1c1f23 !important;
     }
 
     /* Tabellenlinien etwas klarer */
@@ -237,7 +173,7 @@
           <div
             data-hfs-widget="true"
             data-hfs-widget-sq="true"
-            data-hfs-widget-sq-location="A=1@O=Feldkirch Landesgericht@X=9592030@Y=47236085@U=81@L=480082400@p=1774215648@i=A×at:48:824@"
+            data-hfs-widget-sq-location="A=1@O=Feldkirch Landesgericht@X=9592030@Y=47236085@U=81@L=480082400@p=1774303212@i=A×at:48:824@"
             data-hfs-widget-sq-locationname="Feldkirch Landesgericht"
             style="width:100%;">
           </div>
