@@ -164,6 +164,20 @@
       background: #4ade80;
       box-shadow: 0 0 12px rgba(74, 222, 128, 0.75);
       flex: 0 0 auto;
+      animation: liveBlink 1.4s ease-in-out infinite;
+    }
+    
+    @keyframes liveBlink {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 12px rgba(74, 222, 128, 0.75);
+      }
+      50% {
+        opacity: 0.35;
+        transform: scale(0.82);
+        box-shadow: 0 0 4px rgba(74, 222, 128, 0.35);
+      }
     }
 
     .stage {
@@ -528,7 +542,7 @@
       <div class="monitor-head">
         <div class="monitor-label">
           <div class="monitor-label-badge">Monitor</div>
-          <div class="monitor-label-text">Abfahrten ab Haltestelle in Echtzeit-Ansicht</div>
+          <div class="monitor-label-text">Abfahrten in Echtzeit</div>
         </div>
       </div>
 
