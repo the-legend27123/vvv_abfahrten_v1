@@ -15,8 +15,6 @@
       --bg-1: #081018;
       --bg-2: #0d1621;
       --bg-3: #101b28;
-      --panel: rgba(14, 23, 34, 0.88);
-      --panel-2: rgba(255,255,255,0.04);
       --panel-border: rgba(255,255,255,0.09);
       --text: #f5f7fa;
       --muted: #9aa8b7;
@@ -25,7 +23,6 @@
       --shadow-soft: 0 10px 24px rgba(0,0,0,0.20);
       --widget-scale: 1.9;
       --widget-width: 78.125%;
-      --icon-yellow: #ffd54a;
       --accent: #6fd3ff;
       --accent-soft: rgba(111, 211, 255, 0.18);
     }
@@ -82,8 +79,7 @@
       gap: 20px;
       padding: 18px 22px;
       border-radius: 24px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025));
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025));
       border: 1px solid rgba(255,255,255,0.08);
       box-shadow: var(--shadow-soft);
       backdrop-filter: blur(10px);
@@ -98,25 +94,22 @@
     }
 
     .title-icon {
-      width: 54px;
-      height: 54px;
-      min-width: 54px;
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, #ffe27f 0%, #ffd54a 55%, #f3b800 100%);
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ffe27f 0%, #ffd54a 55%, #f3b800 100%);
       color: #111;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.45),
         0 10px 24px rgba(0,0,0,0.28);
-    }
-
-    .title-icon svg {
-      width: 28px;
-      height: 28px;
-      display: block;
+      border: 1px solid rgba(255,255,255,0.35);
     }
 
     .title-wrap {
@@ -187,8 +180,7 @@
       position: relative;
       border-radius: 30px;
       padding: 22px;
-      background:
-        linear-gradient(180deg, rgba(18,29,42,0.96), rgba(10,17,26,0.98));
+      background: linear-gradient(180deg, rgba(18,29,42,0.96), rgba(10,17,26,0.98));
       border: 1px solid var(--panel-border);
       box-shadow: var(--shadow);
       overflow: hidden;
@@ -258,8 +250,7 @@
       min-height: 0;
       border-radius: 22px;
       padding: 14px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
       border: 1px solid rgba(255,255,255,0.08);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
     }
@@ -270,9 +261,11 @@
       min-height: 100%;
       background: #ffffff;
       border-radius: 16px;
-      overflow: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
       position: relative;
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+      scroll-behavior: smooth;
     }
 
     .zoom-wrap {
@@ -318,7 +311,6 @@
       font-family: Arial, Helvetica, sans-serif !important;
     }
 
-    /* Linienbadge weiß */
     .widget-wrap [style*="background"] *,
     .widget-wrap [class*="line"] *,
     .widget-wrap [class*="badge"] *,
@@ -384,12 +376,7 @@
         width: 42px;
         height: 42px;
         min-width: 42px;
-        border-radius: 14px;
-      }
-
-      .title-icon svg {
-        width: 22px;
-        height: 22px;
+        font-size: 22px;
       }
 
       .status-pill {
@@ -430,14 +417,7 @@
   <div class="topbar">
     <div class="topbar-card">
       <div class="title-row">
-        <div class="title-icon" aria-hidden="true">
-          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="8" width="44" height="48" rx="10" fill="#111111" opacity="0.08"/>
-            <path d="M22 14h20c4.418 0 8 3.582 8 8v20c0 4.418-3.582 8-8 8H22c-4.418 0-8-3.582-8-8V22c0-4.418 3.582-8 8-8Z" fill="#111"/>
-            <rect x="28" y="20" width="8" height="24" rx="2" fill="#FFD54A"/>
-            <rect x="20" y="28" width="24" height="8" rx="2" fill="#FFD54A"/>
-          </svg>
-        </div>
+        <div class="title-icon">H</div>
 
         <div class="title-wrap">
           <p class="eyebrow">Live Abfahrten</p>
@@ -483,7 +463,7 @@
       <div class="footer-left">
         <span>VMOBIL Widget</span>
         <span class="footer-sep">•</span>
-        <span>Stand: 24.03.2026 15:56</span>
+        <span>Stand: 24.03.2026 13:15</span>
       </div>
       <div class="footer-right">
         <span>Design v5</span>
@@ -492,6 +472,8 @@
   </div>
 
   <script>
+    const AUTO_SCROLL_TOP = 520;
+
     function isTimeOnly(text) {
       return /^\s*\d{1,2}:\d{2}\s*$/.test(text);
     }
@@ -517,6 +499,12 @@
       const style = window.getComputedStyle(el);
       const bg = style.backgroundColor;
       return bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent";
+    }
+
+    function scrollWidgetToPosition() {
+      const wrap = document.getElementById("widgetWrap");
+      if (!wrap) return;
+      wrap.scrollTop = AUTO_SCROLL_TOP;
     }
 
     function hideOnlyWidgetHeader() {
@@ -554,14 +542,12 @@
           return;
         }
 
-        /* Nur das exakte Datum grau */
         if (/^\d{2}\.\d{2}\.\d{4}$/.test(text)) {
           el.style.color = "#5d5d5d";
           el.style.opacity = "1";
           return;
         }
 
-        /* Nur der exakte Wochentag grau */
         if (/^(Mo|Di|Mi|Do|Fr|Sa|So),?$/.test(text)) {
           el.style.color = "#5d5d5d";
           el.style.opacity = "1";
@@ -628,13 +614,26 @@
 
     window.addEventListener("load", () => {
       runStyling();
-      setTimeout(runStyling, 400);
-      setTimeout(runStyling, 1000);
-      setTimeout(runStyling, 2000);
+
+      setTimeout(() => {
+        runStyling();
+        scrollWidgetToPosition();
+      }, 400);
+
+      setTimeout(() => {
+        runStyling();
+        scrollWidgetToPosition();
+      }, 1000);
+
+      setTimeout(() => {
+        runStyling();
+        scrollWidgetToPosition();
+      }, 2000);
     });
 
     const observer = new MutationObserver(() => {
       runStyling();
+      scrollWidgetToPosition();
     });
 
     window.addEventListener("load", () => {
