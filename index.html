@@ -19,6 +19,7 @@
       --shadow: 0 10px 30px rgba(0,0,0,0.28);
       --widget-scale: 1.9;
       --widget-width: 78.125%;
+      --icon-yellow: #ffd54a;
     }
 
     * { box-sizing: border-box; }
@@ -53,16 +54,15 @@
       width: 42px;
       height: 42px;
       min-width: 42px;
+      border-radius: 999px;
+      background: var(--icon-yellow);
+      color: #111;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      filter: drop-shadow(0 4px 14px rgba(0,0,0,0.25));
-    }
-
-    .title-icon svg {
-      width: 42px;
-      height: 42px;
-      display: block;
+      font-size: 24px;
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
     }
 
     .title-wrap {
@@ -129,6 +129,7 @@
       font-family: Arial, Helvetica, sans-serif !important;
     }
 
+    /* Linienbadge weiß */
     .widget-wrap [style*="background"] *,
     .widget-wrap [class*="line"] *,
     .widget-wrap [class*="badge"] *,
@@ -166,11 +167,11 @@
         font-size: 14px;
       }
 
-      .title-icon,
-      .title-icon svg {
+      .title-icon {
         width: 36px;
         height: 36px;
         min-width: 36px;
+        font-size: 20px;
       }
 
       .stage {
@@ -195,18 +196,7 @@
 <body>
   <div class="topbar">
     <div class="title-row">
-      <div class="title-icon" aria-hidden="true">
-        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img">
-          <circle cx="32" cy="32" r="32" fill="#f7c62f"/>
-          <g fill="#1b2130">
-            <path d="M20 49V26c0-8 4-13 12-13s12 5 12 13v23h-3v3.5c0 2.5-2 4.5-4.5 4.5S32 55 32 52.5V49h-8v3.5c0 2.5-2 4.5-4.5 4.5S15 55 15 52.5V49h5z"/>
-            <rect x="23" y="17" width="18" height="3" rx="1.5"/>
-            <path d="M25.5 22h13c1.6 0 2.9 1.2 3.1 2.8l1.7 10.5c.3 1.9-1.2 3.7-3.1 3.7H23.8c-1.9 0-3.4-1.8-3.1-3.7l1.7-10.5c.2-1.6 1.5-2.8 3.1-2.8z"/>
-            <circle cx="22" cy="43" r="3"/>
-            <circle cx="42" cy="43" r="3"/>
-          </g>
-        </svg>
-      </div>
+      <div class="title-icon">H</div>
       <div class="title-wrap">
         <h1 class="title">Feldkirch Landesgericht</h1>
         <p class="subtitle">VMOBIL Abfahrtsmonitor</p>
@@ -231,7 +221,7 @@
   </div>
 
   <div class="footer">
-    Eingebettet über VMOBIL Widget | Stand 24.03.2026 13:03 | v3
+    Eingebettet über VMOBIL Widget
   </div>
 
   <script>
@@ -249,7 +239,7 @@
 
     function isDirectionText(text) {
       return text.includes("→") ||
-        /Bahnhof|Bhf|Feldkirch|Tisis|Letze|Rankweil|Sargans|Gisingen|Altenstadt|Klaus|Tosters|Satteins|Nofels|Levis|Bangs|Schaan|LKH|Landeskrankenhaus|Muntlix|Eschen|Dornbirn/i.test(text);
+        /Bahnhof|Bhf|Feldkirch|Tisis|Letze|Rankweil|Sargans|Gisingen|Altenstadt|Klaus|Tosters|Satteins|Nofels|Levis|Bangs|Schaan|LKH|Landeskrankenhaus|Muntlix|Eschen/i.test(text);
     }
 
     function isLineText(text) {
@@ -260,39 +250,6 @@
       const style = window.getComputedStyle(el);
       const bg = style.backgroundColor;
       return bg && bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent";
-    }
-
-    function isExactDate(text) {
-      return /^\d{2}\.\d{2}\.\d{4}$/.test(text);
-    }
-
-    function isExactWeekday(text) {
-      return /^(Mo|Di|Mi|Do|Fr|Sa|So),?$/.test(text);
-    }
-
-    function setDateBlockGrey() {
-      const wrap = document.getElementById("widgetWrap");
-      if (!wrap) return;
-
-      const all = Array.from(wrap.querySelectorAll("*"));
-
-      all.forEach(el => {
-        const text = (el.textContent || "").trim();
-        if (!text) return;
-
-        const hasWeekday = /\b(Mo|Di|Mi|Do|Fr|Sa|So)\b/.test(text);
-        const hasDate = /\b\d{2}\.\d{2}\.\d{4}\b/.test(text);
-
-        if (hasWeekday || hasDate) {
-          el.style.color = "#5d5d5d";
-          el.style.opacity = "1";
-
-          el.querySelectorAll("*").forEach(child => {
-            child.style.color = "#5d5d5d";
-            child.style.opacity = "1";
-          });
-        }
-      });
     }
 
     function hideOnlyWidgetHeader() {
@@ -330,7 +287,15 @@
           return;
         }
 
-        if (isExactDate(text) || isExactWeekday(text)) {
+        /* Nur das exakte Datum grau */
+        if (/^\d{2}\.\d{2}\.\d{4}$/.test(text)) {
+          el.style.color = "#5d5d5d";
+          el.style.opacity = "1";
+          return;
+        }
+
+        /* Nur der exakte Wochentag schwarz */
+        if (/^(Mo|Di|Mi|Do|Fr|Sa|So),?$/.test(text)) {
           el.style.color = "#5d5d5d";
           el.style.opacity = "1";
           return;
@@ -359,8 +324,8 @@
         if (isTimeOnly(text)) return;
         if (isHeaderText(text)) return;
         if (isLineText(text)) return;
-        if (isExactDate(text)) return;
-        if (isExactWeekday(text)) return;
+        if (/^\d{2}\.\d{2}\.\d{4}$/.test(text)) return;
+        if (/^(Mo|Di|Mi|Do|Fr|Sa|So),?$/.test(text)) return;
         if (isOccupancyText(text)) return;
 
         const style = window.getComputedStyle(el);
@@ -391,7 +356,6 @@
     function runStyling() {
       hideOnlyWidgetHeader();
       styleLeafTexts();
-      setDateBlockGrey();
       forceVeryLightTextsBlack();
     }
 
