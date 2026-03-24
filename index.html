@@ -17,8 +17,6 @@
       --text: #f5f7fa;
       --muted: #aab4bf;
       --shadow: 0 10px 30px rgba(0,0,0,0.28);
-
-      /* Widget-Größe */
       --widget-scale: 1.9;
       --widget-width: 78.125%;
     }
@@ -100,19 +98,66 @@
       color: var(--muted);
     }
 
-    /* Nur Schriftart setzen, keine Farben global überschreiben */
+    /* Nur Schriftart global setzen */
     .widget-wrap,
     .widget-wrap * {
       font-family: Arial, Helvetica, sans-serif !important;
     }
 
-    /* Nur Linien/Badge weiß machen */
+    /* Linien-/Badge-Text weiß */
     .widget-wrap [class*="line"] *,
     .widget-wrap [class*="badge"] *,
     .widget-wrap [class*="product"] *,
     .widget-wrap [class*="serviceline"] *,
     .widget-wrap [class*="mot-label"] * {
       color: #ffffff !important;
+    }
+
+    /* Fahrtrichtung / Ziel schwarz */
+    .widget-wrap [class*="direction"],
+    .widget-wrap [class*="direction"] *,
+    .widget-wrap [class*="destination"],
+    .widget-wrap [class*="destination"] *,
+    .widget-wrap [class*="towards"],
+    .widget-wrap [class*="towards"] *,
+    .widget-wrap [class*="route"],
+    .widget-wrap [class*="route"] *,
+    .widget-wrap [class*="desc"],
+    .widget-wrap [class*="desc"] * {
+      color: #000000 !important;
+      opacity: 1 !important;
+    }
+
+    /* Auslastung schwarz */
+    .widget-wrap [class*="occupancy"],
+    .widget-wrap [class*="occupancy"] *,
+    .widget-wrap [class*="load"],
+    .widget-wrap [class*="load"] *,
+    .widget-wrap [class*="util"],
+    .widget-wrap [class*="util"] * {
+      color: #000000 !important;
+      opacity: 1 !important;
+    }
+
+    /* Datum/Wochentag schwarz */
+    .widget-wrap [class*="date"],
+    .widget-wrap [class*="date"] *,
+    .widget-wrap [class*="day"],
+    .widget-wrap [class*="day"] *,
+    .widget-wrap [class*="weekday"],
+    .widget-wrap [class*="weekday"] * {
+      color: #000000 !important;
+      opacity: 1 !important;
+    }
+
+    /* Titel im Widget lesbar */
+    .widget-wrap h1,
+    .widget-wrap h2,
+    .widget-wrap h3,
+    .widget-wrap [class*="title"],
+    .widget-wrap [class*="header"] {
+      color: #000000 !important;
+      opacity: 1 !important;
     }
 
     /* Tabellenlinien etwas klarer */
